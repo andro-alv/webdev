@@ -1,0 +1,6 @@
+yellow
+green
+blue
+orange
+red
+pink

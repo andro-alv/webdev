@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+<head>
+	<title>Micro 5</title>
+	<style type="text/css">
+		#spinBox{
+			width: 100px;
+			height: 100px;
+			background-color: yellow;
+			border: 5px solid black; 
+			margin-top: 20px; 
+			margin-bottom: 20px;
+		}
+
+		#container{
+			margin-top: 20px; 
+			margin-bottom: 20px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id = "spinBox"> </div>
+	<div id="container">
+		<div id ="setBox"></div>
+		<button id = "addBoxBtn">Add box to page in 1 second</button>
+		<button id="spinLeftBtn">Spin Left</button>
+		<button id="spinRightBtn">Spin Right</button>
+		<button id="stopSpinBtn">Stop</button>
+	</div>
+	<div id="boxes"></div>
+	<script type="text/javascript">
+		let addBox = document.getElementById('addBoxBtn')
+		let spinRight = document.getElementById("spinRightBtn")
+		let spinLeft = document.getElementById("spinLeftBtn")
+		let stopSpin = document.getElementById("stopSpinBtn")
+		let spinBox = document.getElementById("spinBox")
+		var leftInterval;
+		var rightInterval;
+
+
+
+		addBox.addEventListener("click", function(event){
+			setTimeout(createBox, 1000)
+
+		})
+		spinLeft.addEventListener("click", function(event){
+			spinLeftFunc()
+		})
+
+		spinRight.addEventListener("click", function(event){
+			spinRightFunc()	
+		})
+
+		stopSpin.addEventListener("click", function(event){
+			clearInterval(leftInterval)
+			clearInterval(rightInterval)
+
+		})
+
+		
+		function spinRightFunc(){
+			var rightDegree = 0
+			rightInterval = setInterval(function(){
+				spinBox.style.transform = "rotate("+ rightDegree++ +"deg)" 
+			}, 10)
+
+
+		}
+
+		function spinLeftFunc(){
+			var leftDegree = 0
+			leftInterval = setInterval(function(){
+				spinBox.style.transform= "rotate("+ leftDegree-- +"deg)" 
+			}, 10)
+
+		}
+
+		function createBox(){
+			var colors = ["blue", "red", "green", "pink", "orange"]
+			var height = ["20px", "40px", "60px", "80px", "100px"]
+			var width = ["20px", "40px", "60px", "80px", "100px"]
+			let randColor = Math.floor(Math.random() * colors.length)
+			let randHeight = Math.floor(Math.random()* height.length)
+			let randWidth = Math.floor(Math.random() * width.length)
+			let colorChoice = colors[randColor]
+			let heightChoice = height[randHeight]
+			let widthChoice = width[randWidth]
+			var createBoxes = document.createElement("DIV")
+			createBoxes.style.float ="left"
+			createBoxes.style.backgroundColor = colorChoice	
+			createBoxes.style.width = widthChoice
+			createBoxes.style.height = heightChoice
+			console.log(createBoxes)
+			document.getElementById("boxes").appendChild(createBoxes)
+
+		}
+		function turnLeft(){
+
+		}
+	</script>
+</body>
+
+</html>

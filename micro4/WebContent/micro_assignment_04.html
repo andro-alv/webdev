@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Micro Assignment 4</title>
+	<style>
+		div {
+			display: inline-block;
+		}
+
+		#firstInt {
+			width: 100px;
+			height: 100px;
+		}
+
+		#secInt {
+			width: 100px;
+			height: 100px;
+		}
+
+		input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+			/* display: none; <- Crashes Chrome on hover */
+			-webkit-appearance: none;
+			margin: 0;
+			/* <-- Apparently some margin are still there even though it's hidden */
+		}
+
+		input[type=number] {
+			-moz-appearance: textfield; /* Firefox */
+		}
+
+		input {
+			text-align: center;
+			font-size: 35px;
+		}
+
+		select {
+			display: block;
+			margin: 0 auto;
+		}
+		#answer{
+			font-size: 30px;
+		}
+
+	</style>
+</head>
+<body>
+	<h1>Micro 04</h1>
+	<div>
+		<input type="number" id="firstInt">
+	</div>
+
+	<div>
+		<select id="operation">
+			<option value="add">+</option>
+			<option value="subtract">-</option>
+			<option value="multiply">x</option>
+			<option value="divide">/</option>
+
+		</select>
+	</div>
+
+	<div>
+		<input type="number" id="secInt">
+	</div>
+	
+	<button id="equals">=</button>
+	<div id = "answer"></div>
+	<script type="text/javascript">
+		let btn = document.getElementById("equals");
+		let operation = document.getElementById("operation")
+
+		
+		
+		//console.log(firstInt)
+
+		btn.onclick = function(event) {
+			let firstInt = document.getElementById("firstInt").value
+			let secInt = document.getElementById("secInt").value
+			if (operation.value == "add"){
+				let result = parseFloat(firstInt)+parseFloat(secInt)
+				document.getElementById("answer").innerHTML = result
+			}
+			else if (operation.value == "subtract"){
+				let result = parseFloat(firstInt)-parseFloat(secInt)
+				document.getElementById("answer").innerHTML = result
+				
+			}
+			else if (operation.value == "multiply"){
+				let result = parseFloat(firstInt)*parseFloat(secInt)
+				document.getElementById("answer").innerHTML = result
+			}
+			else if (operation.value == "divide"){
+				let result = parseFloat(firstInt)/parseFloat(secInt)
+				document.getElementById("answer").innerHTML = result
+			}
+
+		}
+		
+	</script>
+
+
+</body>
+</html>

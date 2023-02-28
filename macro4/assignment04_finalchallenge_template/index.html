@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>Design Your own Hogwarts!</title>
+    <style type="text/css">
+      #container{
+
+        
+      }
+      #column1{
+        width: 320px;
+        height: 320px;
+        
+        float:left;
+        border-color:green;
+        border-style: solid;
+          
+      }
+      #column2{
+        width: 750px;
+        
+        border-style: solid;
+        float:left;
+
+
+
+      }
+
+        #column1 img:hover{
+        border: 1px solid red;
+        /*the hover works except it moves the images around*/
+      }
+
+      .yellow{
+        border: 3px solid yellow;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <h1>Design Your Own Hogwarts!</h1>
+    <div id ="container">
+     <div id ="column1"></div>
+      <div>Click on a tile here to select it. Then click on the map to place the tile.</div>
+     <div id = "column2"></div> 
+    </div>
+
+    <!-- load in the image array file - this makes available a new array of all image filenames that you can use for this project -->
+    <!-- Assets courtesy of Crawl Stone Soup: https://github.com/crawl/tiles -->
+    <script src="image_array.js"></script>
+    <script>
+      for(i =0; i<array_library.length; i++){
+        var images = document.createElement("IMG")
+        
+        images.setAttribute("src", array_library[i])
+        images.style.padding ="3px"
+       
+        document.getElementById("column2").appendChild(images)
+        
+         
+}
+      
+      var source = "" 
+
+      for(i =0 ; i<100; i++){
+        var create = document.createElement("IMG")
+        create.setAttribute("width", "32px")
+        create.setAttribute("height","32px")
+        create.setAttribute("src","data:image/png;base64,R0lGODlhFAAUAIAAAP///wAAACH5BAEAAAAALAAAAAAUABQAAAIRhI+py+0Po5y02ouz3rz7rxUAOw==")
+        
+        create.style.float = "left"
+        
+        create.style.padding = "0"
+        
+        document.getElementById("column1").appendChild(create)
+      }
+     
+      var imagesClicked = document.getElementById("column2").querySelectorAll("IMG")
+      for (i = 0; i<imagesClicked.length; i++){
+        imagesClicked[i].onclick=function(event){
+          let currentImage = document.querySelector(".yellow")
+          if (currentImage){
+            currentImage.classList.remove("yellow")
+          }
+          event.currentTarget.classList.add("yellow")
+           source = event.currentTarget.src
+
+        }
+       
+      }
+
+    var builtImages = document.getElementById("column1").querySelectorAll("IMG")
+    for (i=0; i<builtImages.length;i++){
+      builtImages[i].onclick=function(event){
+        event.currentTarget.src = source
+      }
+    }
+
+
+    </script>
+
+
+  </body>
+</html>

@@ -1,0 +1,323 @@
+<!doctype html>
+<html>
+<head>
+  <style>
+    .note {
+      width: 150px;
+      height: 150px;
+      margin: 5px;
+      float: left;
+      box-sizing: border-box;
+      padding: 5px;
+      background-color: pink;
+      position: relative;
+    }
+
+    #corkboard {
+      background-image: url('images/corkboard.jpg');
+      min-height: 500px;
+    }
+
+    .tab {
+      display: inline-block;
+      width: 100px;
+      border: 1px solid #ccc;
+      text-align: center;
+      border-radius: 15px 15px 0px 0px;
+      padding: 5px;
+      border-bottom: 0px;
+    }
+
+    .active {
+      background-color: #ccc;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .delButton {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+    }
+
+    .checkButton{
+      position: absolute;
+      top:0px;
+      left: 0px;
+
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Yearly To-Do List</h1>
+
+  <div id="controls">
+    <div id="winter" class="tab active" data-mypanel="winterpanel">Winter</div>
+    <div id="spring" class="tab" data-mypanel="springpanel">Spring</div>
+    <div id="summer" class="tab" data-mypanel="summerpanel">Summer</div>
+    <div id="fall" class="tab" data-mypanel="fallpanel">Fall</div>
+
+    <select id="filter">
+      <option value="all">All Tasks</option>
+      <option value="winter">Winter</option>
+      <option value="spring">Spring</option>
+      <option value="summer">Summer</option>
+      <option value="fall">Fall</option>
+      <option value ="uncompleted">Uncompleted Tasks</option>
+      <option value="completed"> Completed Tasks</option>
+    </select>
+
+    <select id = "deleteFilter">
+      <option >Delete Selection</option>
+      <option value="all">All Tasks</option>
+      <option value="winter">Winter</option>
+      <option value="spring">Spring</option>
+      <option value="summer">Summer</option>
+      <option value="fall">Fall</option>
+      <option value ="uncompleted">Uncompleted Tasks</option>
+      <option value="completed"> Completed Tasks</option>
+    </select>
+
+  </div>
+
+  <div id="panels">
+    <div id="winterpanel" class="panel">
+      What is something you want to accomplish this winter?
+      <input type="text"><button data-mytype="winter" data-mycolor="grey">Add note</button>
+    </div>
+    <div id="springpanel" class="panel hidden">
+      What is something you want to accomplish this spring?
+      <input type="text" value=""><button data-mytype="spring" data-mycolor="green">Add note</button>
+    </div>
+    <div id="summerpanel" class="panel hidden">
+      What is something you want to accomplish this summer?
+      <input type="text"><button data-mytype="summer" data-mycolor="yellow">Add note</button>
+    </div>
+    <div id="fallpanel" class="panel hidden">
+      What is something you want to accomplish this fall?
+      <input type="text"><button data-mytype="fall" data-mycolor="brown" data-myseason="fall">Add note</button>
+    </div>
+  </div>
+
+
+
+  <div id="corkboard"></div>
+
+  <script>
+
+      // handle the tabs and when the user clicks on them
+      let allTabs = document.querySelectorAll('.tab');
+
+      // visit all tabs
+      for (let i = 0; i < allTabs.length; i++) {
+
+        // have each tab listen for a mouse event
+        allTabs[i].onclick = function(event) {
+          console.log( event.currentTarget );
+
+          // remove the class of active from the other element that currently has it
+          let currentActive = document.querySelector('.active');
+          currentActive.classList.remove('active');
+          event.currentTarget.classList.add('active');
+
+          // hide every panel on the page
+          let allPanels = document.querySelectorAll('.panel');
+          for (let j = 0; j < allPanels.length; j++) {
+            allPanels[j].classList.add('hidden');
+          }
+
+          // show the correct panel that goes along with this season
+          let myPanel = event.currentTarget.dataset.mypanel;
+          document.getElementById( myPanel ).classList.remove('hidden');
+        }
+
+      }
+
+      // grab a ref to each button on the page
+      let allButtons = document.querySelectorAll('button');
+      for (let i = 0; i < allButtons.length; i++) {
+
+        // have each button listen for mouse events
+        allButtons[i].onclick = function(event) {
+
+          
+          let noteText = event.currentTarget.previousElementSibling.value;
+          if(noteText.length >0){
+
+           // grab the type of this note
+          let myType = event.currentTarget.dataset.mytype;
+          console.log(myType);
+            //create a new note
+            let tempNote = document.createElement('div');
+            tempNote.classList.add('note');
+            tempNote.classList.add(myType);
+            tempNote.classList.add("uncompleted")
+
+
+            // give each note their own delete button
+            let deleteButton = document.createElement('img');
+            deleteButton.src = 'images/delete_button.png';
+            deleteButton.classList.add('hidden');
+            deleteButton.classList.add('delButton');
+            tempNote.appendChild(deleteButton);
+
+            let completeButton = document.createElement("img");
+            completeButton.src = "images/checkmark_button.png"
+            completeButton.classList.add("hidden")
+            completeButton.classList.add("checkButton")
+            console.log(completeButton)
+            tempNote.appendChild(completeButton)
+
+
+
+
+            tempNote.onmouseover = function(event) {
+            // grab a ref to the delete button
+            event.currentTarget.children[0].classList.remove('hidden');
+            event.currentTarget.children[1].classList.remove("hidden")
+
+          }
+          tempNote.onmouseout = function(event) {
+            // grab a ref to the delete button
+            event.currentTarget.children[0].classList.add('hidden');
+            event.currentTarget.children[1].classList.add('hidden');
+            
+          }
+
+          // listen for when the user clicks on the delete button
+          deleteButton.onclick = function(event) {
+            console.log(event.currentTarget.parentElement);
+            event.currentTarget.parentElement.remove();
+          }
+
+          completeButton.onclick = function(event){
+
+            if(event.currentTarget.parentElement.classList.contains("completed") == false){
+
+              event.currentTarget.parentElement.children[3].classList.remove('hidden');
+              event.currentTarget.parentElement.classList.remove("uncompleted")
+              event.currentTarget.parentElement.classList.add("completed")
+              console.log(event.currentTarget.parentElement.classList)
+
+
+            }
+            else{
+              event.currentTarget.parentElement.children[3].classList.add('hidden');
+              event.currentTarget.parentElement.classList.remove("completed")
+              event.currentTarget.parentElement.classList.add("uncompleted")
+              console.log(event.currentTarget.parentElement.classList)
+
+            }
+
+          }
+
+          // grab the color from the button
+          let buttonColor = event.currentTarget.dataset.mycolor;
+          tempNote.style.backgroundColor = buttonColor;
+
+          let tempP = document.createElement('p');
+          tempP.innerHTML = noteText;
+          tempNote.appendChild(tempP);
+
+          var checkP = document.createElement("p")
+          var checkText = "&#10004"
+
+          checkP.innerHTML= checkText
+          tempNote.appendChild(checkP)
+          checkP.classList.add("hidden")
+
+          // put the note into the corkboard
+          document.querySelector('#corkboard').appendChild( tempNote );
+
+        }
+
+
+          // grab the text from the previous sibling of teh button
+          //let noteText = event.currentTarget.previousElementSibling.value;
+
+          
+
+
+        }
+
+      }
+
+
+      // listen for when the filter drop down changes
+      document.querySelector('#filter').onchange = function(event) {
+        // grab the currently selected filter value
+        let currentValue = event.currentTarget.value;
+        if(currentValue == "all"){
+          let everythingShown = document.querySelectorAll('.note')
+          for (let i = 0; i < everythingShown.length; i++){
+            everythingShown[i].classList.remove("hidden")
+          }
+        }
+
+        else{
+
+          // hide EVERYTHING
+          let everything = document.querySelectorAll('.note');
+          for (let i = 0; i < everything.length; i++) {
+            everything[i].classList.add('hidden');
+          }
+
+        // grab a ref to all elements of this class
+        let allNotesOfThisClass = document.querySelectorAll( "." + currentValue );
+        console.log(allNotesOfThisClass);
+        // SHOW all elements of the correct class
+        for (let i = 0; i < allNotesOfThisClass.length; i++) {
+          allNotesOfThisClass[i].classList.remove('hidden');
+        }
+        console.log(allNotesOfThisClass);
+
+      }
+
+    }
+
+    document.querySelector('#deleteFilter').onchange = function(event) {
+      let currentValue = event.currentTarget.value 
+      if(currentValue == "all"){
+        let everythingDel = document.querySelectorAll('.note')
+        for(let i =0; i<everythingDel.length; i++){
+          everythingDel[i].remove()
+        }
+
+      }
+
+      else {
+
+        // grab a ref to all elements of this class
+        let allNotesOfThisClass = document.querySelectorAll( "." + currentValue );
+        
+        // SHOW all elements of the correct class
+        for (let i = 0; i < allNotesOfThisClass.length; i++) {
+          allNotesOfThisClass[i].remove();
+        }
+        console.log(allNotesOfThisClass);
+
+
+      }
+
+
+    }
+
+    
+
+
+
+
+
+
+
+
+  </script>
+
+
+</body>
+
+</html>

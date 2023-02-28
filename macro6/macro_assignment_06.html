@@ -1,0 +1,303 @@
+<!doctype html>
+<html>
+<head>
+  <title>Memory</title>
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: monospace;
+      text-align: center;
+    }
+    .hidden {
+      display: none;
+    }
+
+    #tokens {
+      width: 400px;
+      height: 300px;
+      margin: auto;
+    }
+
+    #tokens img {
+      width: 100px;
+      height: 100px;
+    }
+
+
+  </style>
+</head>
+<body>
+
+  <h1>Memory Matching Madness!</h1>
+
+  <!-- start screen -->
+  <div id="screen_start">
+    <p>Play a fast-paced game of "memory" and try and beat your best time!</p>
+
+    <button id="start">Start</button>
+    <select id = "boardSize">
+      <option value="6">Easy</option>
+      <option value="10">Medium</option>
+      <option value="15">Hard</option>
+    </select>
+  </div>
+
+
+  <!-- game play screen -->
+  <div id="screen_game" class="hidden">
+    <div id="timer">0 seconds</div>
+    <div id="tokens">
+      <audio id ="correctSound">
+        <source src="correct.mp3" type="audio/mp3">
+        </audio>
+
+        <audio id ="incorrectSound">
+          <source src="wrong.mp3" type="audio/mp3">
+          </audio>
+
+        </div>
+      </div>
+
+
+      <!-- game over screen -->
+      <div id="screen_gameover" class="hidden">
+        <div> GAME OVER!</div>
+        <div id = "goodbyeMessage">Your time was X ... that didn't beat the best time</div>
+        <div id = "bestTime"></div>
+        
+        <button id="again" >Play again</button>
+      </div>
+
+      <script>
+      // isolate our DOM queries
+      let screen_start = document.querySelector('#screen_start');
+      let screen_game = document.querySelector('#screen_game');
+      let screen_gameover = document.querySelector('#screen_gameover');
+      let start = document.querySelector('#start');
+      let tokens = document.querySelector('#tokens');
+      var images = document.getElementById("tokens").getElementsByTagName("img")
+      let goodbye = document.getElementById("goodbyeMessage");
+      let timer = document.getElementById("timer");
+      let again = document.getElementById("again");
+      let firstPlace = document.getElementById("bestTime")
+ 
+      
+
+      
+      // array of all pokemon graphics
+      var assets = ['snorlax.png', 'electrabuzz.png', 'chansey.png', 'oddish.png',
+      'pikachu.png', 'paras.png', 'arcanine.png', 'ponita.png',
+      'venonat.png', 'eggsecute.png', 'machop.png', 'pidgey.png',
+      'psyduck.png', 'tauros.png', 'vulpix.png', 'gloom.png',
+      'krabby.png', 'butterfree.png', 'bulbasaur.png', 'clefairy.png',
+      'koffing.png', 'goldeen.png', 'magikarp.png', 'beedrill.png',
+      'lapras.png', 'meowth.png', 'ekans.png', 'jigglypuff.png',
+      'horsea.png', 'polywog.png', 'sandshrew.png', 'rattata.png',
+      'gengar.png', 'eevee.png', 'bellsprout.png', 'squirtle.png',
+      'seel.png', 'caterpie.png']
+
+      // vars to keep track of which elements were clicked
+      let token1 = false;
+      let token2 = false;
+      let pokeCount = 0;
+
+
+      // when the user click start we need to show the game playing screen
+      start.addEventListener('click', function() {
+
+        var difficulty = document.getElementById("boardSize")
+        var n = difficulty.value
+        console.log(n)
+
+        // make the start screen invisible
+        screen_start.classList.add('hidden');
+
+        // show the playing screen
+        screen_game.classList.remove("hidden");
+
+        var myVar =setInterval(increaseCount, 1000)
+
+        // create 12 pokeballs for the user to click on
+
+        // pick 6 random pokemon
+        let pickedPokemon = [];
+
+        for (let i = 0; i < n; i++) {
+          let randomP = parseInt( Math.random() * assets.length );
+          pickedPokemon.push( assets[randomP] );
+          pickedPokemon.push( assets[randomP] );
+          assets.splice( randomP, 1 );
+        }
+
+        // randomize the pokemon in our array
+        while (pickedPokemon.length > 0) {
+          let tempImage = document.createElement('img');
+          tempImage.src = 'assignment06_images/pokeball.png';
+
+          let secretIndex = parseInt( Math.random() * pickedPokemon.length );
+          tempImage.dataset.secret = pickedPokemon[ secretIndex ];
+          pickedPokemon.splice( secretIndex, 1 );
+
+
+
+          tokens.appendChild( tempImage );
+
+
+
+          
+          
+          tempImage.addEventListener('click', function(event) {
+            let allImg = document.querySelector("#tokens").querySelectorAll("img")
+
+            
+            // if this is the first one clicked, show the image as-is
+            if (token1 == false) {
+              // this becomes token1!
+              token1 = event.currentTarget;
+
+
+              // reveal our secret image
+              event.currentTarget.src = 'assignment06_images/' + event.currentTarget.dataset.secret;
+
+              event.currentTarget.style.pointerEvents = "none";
+              
+              
+
+            }
+
+
+            // if this is the SECOND one clicked, we need to evaluate
+            else {  
+
+              // must be on token2
+              token2 = event.currentTarget;
+
+              // reveal our secret image
+              event.currentTarget.src = 'assignment06_images/' + event.currentTarget.dataset.secret;
+              
+              
+              
+              for(let i =0; i<allImg.length; i++){
+                allImg[i].style.pointerEvents = "none"
+              }
+
+
+              if (token1.dataset.secret == token2.dataset.secret) {
+                console.log("MATCH!");
+                pokeCount++;
+
+                correct()
+                token1 = false;
+
+                token2 = false;
+
+                if (pokeCount == n){
+                  clearInterval(myVar);
+                  screen_game.classList.add("hidden")
+                  screen_gameover.classList.remove("hidden")
+                  goodbye.innerHTML = "Your time: "+ count+ " seconds"
+
+                  if(localStorage.getItem("bestTime")==null){
+                    var bestTime = 1000000;
+                
+                    
+                  }
+                  else{
+                    var bestTime = parseInt(localStorage.getItem("bestTime"));
+                    
+
+                  }
+                  if(count<bestTime){
+                      
+                      firstPlace.innerHTML("First Place: "+count +" seconds")
+                      count = count.toString()
+                      localStorage.setItem("bestTime", count)
+                      
+                    }
+                    else{
+                      firstPlace.innerHTML("First Place: "+ bestTime+ " seconds")
+                    }
+
+
+                }
+
+              }
+              else {
+
+                // in 1/2 second reset these tokens
+                token1.style.pointerEvents = "all"
+                incorrect()
+                setTimeout( reset, 500 );
+                
+
+              }
+
+
+
+            }
+            function restart(){
+              for(let i =0; i<allImg.length; i++){
+                allImg[i].style.pointerEvents = "all"
+              }
+            }
+
+            setTimeout(restart, 2000)
+
+
+          });
+
+          
+
+
+
+        }
+
+
+        
+
+      });
+
+
+      again.addEventListener("click", function(){
+
+        window.location.reload();
+
+
+
+        
+
+      })
+
+      var count = 0;
+      function increaseCount(){
+        count++;
+        timer.innerHTML = count+" seconds"
+
+      }
+      function correct(){
+        let sound1 = document.getElementById("correctSound")
+        sound1.play()
+      }
+      function incorrect(){
+        let sound2 = document.getElementById("incorrectSound")
+        sound2.play()
+      }
+
+      function reset() {
+        // hide both tokens
+        token1.src = 'assignment06_images/pokeball.png';
+        token2.src = 'assignment06_images/pokeball.png';
+
+        // flip the tokens back to false to reset for the next match
+        token1 = false;
+        token2 = false;
+      }
+
+      
+
+    </script>
+
+
+  </body>
+  </html>

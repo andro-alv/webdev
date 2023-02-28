@@ -1,0 +1,405 @@
+<!doctype html>
+<html>
+
+<head>
+<title>Gotta Catch 'em All!</title>
+
+<style>
+#forest {
+	background-image: url('images/environment_forestbackground.png');
+	width: 800px;
+	height: 600px;
+	position: relative;
+	float: left;
+}
+
+#grass1 {
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+}
+
+#grass2 {
+	position: absolute;
+	left: 270px;
+	bottom: 0px;
+}
+
+#grass3 {
+	position: absolute;
+	left: 540px;
+	bottom: 0px;
+}
+
+.grass:hover {
+	background-color: yellow;
+	opacity: 0.5;
+}
+
+#playagain{
+	display: none;
+}
+
+
+#message {
+	display: none;
+	color: red;
+	font-size: 50px;
+	position: absolute;
+	top: 325px;
+	right: 150px;
+}
+
+#outMessage{
+	font-weight:bold;
+	font-size: 25px;
+}
+
+#pokedex{
+	width: 125px;
+	height: 177px;
+	border: 10px solid blue;
+	padding:10px;
+	margin:10px;
+	font-size: 16px;
+	position: absolute;
+	top:435px;
+	right: 455px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+</style>
+</head>
+
+<body>
+	<div id="container">
+		<div id="forest">
+			<img class="grass" id="grass1" src="images/grass.png"> <img
+				class="grass" id="grass2" src="images/grass.png"> <img
+				class="grass" id="grass3" src="images/grass.png">
+		</div>
+
+		<div id="game">
+			<h1>Gotta Catch 'em All!</h1>
+			<p> Your goal in this game is to earn as many Pokeballs as possible while catching a variety of Pokemon along the way.<br /> <br />
+				To play simply click on one of the three grass clumps in the forest. Behind one of those grass clumps is a Pokemon that can be caught. Behind another grass clump are two free Pokeballs that you can use to try again, and behind the last grass clump is nothing. <br /> <br />
+				Note that each time you pick up a grass clump you will be using one of your Pokeballs, and when you run out the game will be over!
+			 </p>
+			<p id="outMessage"></p>
+			<p id="output_pokeballs">Pokeballs left: 5</p>
+			<p id="output_pokecaught">Pokemon caught: 0</p>
+		
+			<button id="playagain">Play Again</button>
+			
+			
+			
+			
+		</div>
+		<div id = "pokedex">POKE DEX
+			<p id = "outputPikachu">0 Pikachu</p>
+			<p id = "outputBulba">0 Bulbasaur</p>
+			<p id = "outputChar">0 Charmander</p>
+			<p id = "outputEevee">0 Eevee</p>
+			<p id = "outputSquirtle">0 Squirtle</p>
+		</div>
+
+	</div>
+
+	<div id="message">Game Over!</div>
+	<script>
+
+		let pokedex = document.getElementById("pokedex")
+		let pikaCount = 0
+		let bulbaCount = 0
+		let charCount = 0
+		let eeveeCount = 0
+		let squirtleCount = 0
+
+		// we need to keep track of how many pokeballs the user has
+		// as well as how many pokemon they have caught
+		let pokeBalls = 5;
+		let pokemonCaught = 0;
+
+		// get a DOM reference to our desired HTML elements
+		let g1 = document.getElementById('grass1');
+		let g2 = document.getElementById('grass2');
+		let g3 = document.getElementById('grass3');
+
+		// set up DOM references for our output divs
+		let outputPokeballs = document.getElementById('output_pokeballs');
+		let outputPokecaught = document.getElementById('output_pokecaught');
+		let playAgain = document.getElementById('playagain');
+		let outMessage = document.getElementById("outMessage");
+		let output_Pikachu = document.getElementById("outputPikachu")
+		let output_Bulba = document.getElementById("outputBulba")
+		let output_Char = document.getElementById("outputChar")
+		let output_Eevee = document.getElementById("outputEevee")
+		let output_Squirtle = document.getElementById("outputSquirtle")
+		
+		
+		
+		function pokedexIncrease(pokemon){
+			switch(pokemon){
+				case "Pikachu":
+				pikaCount+=1;
+				output_Pikachu.innerHTML = pikaCount + " Pikachu"
+				break;	
+
+
+				case "Bulbasaur":
+				bulbaCount +=1;
+				output_Bulba.innerHTML = bulbaCount + " Bulbasaur"
+				break;
+
+				case  "Charmander":
+				charCount +=1;
+				output_Char.innerHTML = charCount + " Charmander"
+				break;
+
+				case "Eevee":
+				eeveeCount +=1
+				output_Eevee.innerHTML = eeveeCount + " Eevee"
+				break;
+
+				case "Squirtle":
+				squirtleCount+=1;
+				output_Squirtle.innerHTML = squirtleCount + " Squirtle"
+				break;
+
+			}
+		}
+
+		
+		
+		
+		// wire up an event listener to respond when the user clicks option
+		// grass1
+
+		let gameOver = document.getElementById("message")
+
+		function specialMessage(){
+			if ((pikaCount >= 1)&&(bulbaCount>=1)&&(charCount >=1)&&(eeveeCount>=1)&&(squirtleCount>=1)){
+				gameOver.innerHTML+= "<br /> CONGRATS YOU CAUGHT ONE OF EACH!"
+			}
+		}
+		
+
+		g1.onclick = function() {
+			// possible pokemon
+			let pokemon = ['images/pikachu.png', 'images/bulbasaur.png', 'images/charmander.png', 'images/eevee.png', 'images/squirtle.png'];
+			let names = ['Pikachu', 'Bulbasaur', 'Charmander', 'Eevee', 'Squirtle'];
+			
+
+			// it costs 1 pokeball to do this
+			pokeBalls -= 1;
+
+			// the user has clicked on grass1!
+			let chance = parseInt(Math.random() * 3);
+			let pokePicker = parseInt(Math.random() * pokemon.length)
+			let source = pokemon[pokePicker]
+			let outputMessage = names[pokePicker]
+			
+
+			if (chance == 0) {
+				// this is a pokemon!
+				g1.src = source;
+				outMessage.innerHTML = "You caught a(n) "+outputMessage +"!"
+				pokedexIncrease(outputMessage)
+					
+				pokemonCaught += 1;
+				g1.style.pointerEvents = "none";
+				g2.style.pointerEvents = "none";
+				g3.style.pointerEvents = "none";
+			} else if (chance == 1) {
+				// this is the extra pokeballs!
+				g1.src = 'images/pokeballs.png';
+				outMessage.innerHTML = "You caught two pokeballs!"
+				
+				pokeBalls += 2;
+				g1.style.pointerEvents = "none";
+				g2.style.pointerEvents = "none";
+				g3.style.pointerEvents = "none";
+			} else {
+				// there's nothing here!
+				outMessage.innerHTML = "There is nothing here!"
+				
+				g1.style.pointerEvents = "none";
+				g2.style.pointerEvents = "none";
+				g3.style.pointerEvents = "none";
+				g1.src = '';
+			}
+
+			// overwrite our output divs to contain the new values of our
+			// variables
+			outputPokeballs.innerHTML = 'Pokeballs left: ' + pokeBalls;
+			outputPokecaught.innerHTML = 'Pokemon caught: ' + pokemonCaught;
+
+			if (pokeBalls == 0) {
+				playAgain.style.display = "none"
+				
+				gameOver.style.display = 'block'
+				specialMessage()
+
+			} else {
+				// show the play agian button
+				playAgain.style.display = 'block';
+				
+
+			}
+
+		}
+		
+		g2.onclick = function() {
+			// possible pokemon
+			let pokemon = ['images/pikachu.png', 'images/bulbasaur.png', 'images/charmander.png', 'images/eevee.png', 'images/squirtle.png'];
+			let names = ['Pikachu', 'Bulbasaur', 'Charmander', 'Eevee', 'Squirtle'];
+			
+
+			// it costs 1 pokeball to do this
+			pokeBalls -= 1;
+
+			// the user has clicked on grass1!
+			let chance = parseInt(Math.random() * 3);
+			let pokePicker = parseInt(Math.random() * pokemon.length)
+			let source = pokemon[pokePicker]
+			let outputMessage = names[pokePicker]
+			
+
+			if (chance == 0) {
+				// this is a pokemon!
+				g2.src = source;
+				outMessage.innerHTML = "You caught a(n) "+outputMessage +"!"
+				pokemonCaught += 1;
+				pokedexIncrease(outputMessage)
+				g1.style.pointerEvents = "none";
+				g2.style.pointerEvents = "none";
+				g3.style.pointerEvents = "none";
+			} else if (chance == 1) {
+				// this is the extra pokeballs!
+				g2.src = 'images/pokeballs.png';
+				outMessage.innerHTML = "You caught two pokeballs!"
+				
+				pokeBalls += 2;
+				g1.style.pointerEvents = "none";
+				g2.style.pointerEvents = "none";
+				g3.style.pointerEvents = "none";
+			} else {
+				// there's nothing here!
+				outMessage.innerHTML = "There is nothing here!"
+				
+				g1.style.pointerEvents = "none";
+				g2.style.pointerEvents = "none";
+				g3.style.pointerEvents = "none";
+				g2.src = '';
+			}
+
+			// overwrite our output divs to contain the new values of our
+			// variables
+			outputPokeballs.innerHTML = 'Pokeballs left: ' + pokeBalls;
+			outputPokecaught.innerHTML = 'Pokemon caught: ' + pokemonCaught;
+
+			if (pokeBalls == 0) {
+				playAgain.style.display = "none"
+			
+				gameOver.style.display = 'block'
+				specialMessage()
+
+			} else {
+				// show the play agian button
+				playAgain.style.display = 'block';
+				
+
+			}
+
+		}
+		
+		g3.onclick = function() {
+			// possible pokemon
+			let pokemon = ['images/pikachu.png', 'images/bulbasaur.png', 'images/charmander.png', 'images/eevee.png', 'images/squirtle.png'];
+			let names = ['Pikachu', 'Bulbasaur', 'Charmander', 'Eevee', 'Squirtle'];
+			
+
+			// it costs 1 pokeball to do this
+			pokeBalls -= 1;
+
+			// the user has clicked on grass1!
+			let chance = parseInt(Math.random() * 3);
+			let pokePicker = parseInt(Math.random() * pokemon.length)
+			let source = pokemon[pokePicker]
+			let outputMessage = names[pokePicker]
+			
+
+			if (chance == 0) {
+				// this is a pokemon!
+				g3.src = source;
+				
+				outMessage.innerHTML = "You caught a(n) "+outputMessage +"!"
+				pokedexIncrease(outputMessage)
+				pokemonCaught += 1;
+				g1.style.pointerEvents = "none";
+				g2.style.pointerEvents = "none";
+				g3.style.pointerEvents = "none";
+			} else if (chance == 1) {
+				// this is the extra pokeballs!
+				g3.src = 'images/pokeballs.png';
+				outMessage.innerHTML = "You caught two pokeballs!"
+				pokeBalls += 2;
+				g1.style.pointerEvents = "none";
+				g2.style.pointerEvents = "none";
+				g3.style.pointerEvents = "none";
+			} else {
+				// there's nothing here!
+				outMessage.innerHTML = "There is nothing here!"
+			
+				g1.style.pointerEvents = "none";
+				g2.style.pointerEvents = "none";
+				g3.style.pointerEvents = "none";
+				g3.src = '';
+			}
+
+			// overwrite our output divs to contain the new values of our
+			// variables
+			outputPokeballs.innerHTML = 'Pokeballs left: ' + pokeBalls;
+			outputPokecaught.innerHTML = 'Pokemon caught: ' + pokemonCaught;
+
+			if (pokeBalls == 0) {
+				playAgain.style.display = "none"
+				
+				gameOver.style.display = 'block'
+				specialMessage()
+
+			} else {
+				// show the play agian button
+				playAgain.style.display = 'block';
+				
+
+			}
+
+		}
+		
+		
+
+		playAgain.onclick = function() {
+			g1.src = 'images/grass.png';
+			g2.src = 'images/grass.png';
+			g3.src = 'images/grass.png';
+			playAgain.style.display = 'none';
+			
+			g1.style.pointerEvents = "all";
+			g2.style.pointerEvents = "all";
+			g3.style.pointerEvents = "all";
+			
+		}
+
+		
+
+
+	</script>
+
+</body>
+
+</html>
+
+
