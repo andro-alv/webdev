@@ -1,7 +1,7 @@
 <?php  
 $username = $_POST ["username"];
 $password = $_POST["password"];
-$path = "/Users/andresalvarez/Documents/MAMP/micro7/data";
+$path = "/Users/andresalvarez/github-repos/webdev/micro7";
 
 $filename = $path."/loginattempt.txt";
 
